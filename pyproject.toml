@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "utfuzz"
+version = "0.1.0"
+description = ""
+authors = ["Vyacheslav Tamarin <slavabarsuk@ya.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+utbot_executor = "1.4.32"
+utbot_mypy_runner = "0.2.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
