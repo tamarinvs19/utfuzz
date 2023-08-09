@@ -37,6 +37,7 @@ def run_utbot(
 ):
     command = f"{java} -jar {jar_path} generate_python {file_under_test}" \
               f" -p {python_path} -o {output_dir} -s {','.join(sys_paths)} --timeout {timeout * 1000}"
+    my_print(command)
     if skip_regression:
         command += ' --do-not-generate-regression-suite'
     if class_under_test is not None:
