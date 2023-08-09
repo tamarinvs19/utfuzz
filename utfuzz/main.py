@@ -4,10 +4,8 @@ import sys
 
 from utfuzz.user_interface.printer import my_print
 
-sys.path.append('/home/vyacheslav/Projects/utfuzz/utfuzz')
 from utfuzz.config.config_manager import save_config, load_config
-from utfuzz.exceptions.exceptions import EnvironmentException, JavaIncompatible, InvalidJavaVersion, \
-    NotFoundRequirementsTxt, MultipleRequirementsTxt
+from utfuzz.exceptions.exceptions import EnvironmentException, NotFoundRequirementsTxt, MultipleRequirementsTxt
 from utfuzz.file_manager.file_finder import find_config, get_py_files
 from utfuzz.parser import parse
 from utfuzz.requirements_managers.java_requirements_manager import JavaRequirementsManager, BaseJavaResult
@@ -96,7 +94,7 @@ def main():
                 pathlib.Path(requirements_file)
             )
     except NotFoundRequirementsTxt:
-        my_print('Cannot found requirements.txt file.'
+        my_print('Cannot find requirements.txt file.'
                  ' If your project has python dependencies please write it to requirements.txt')
     except MultipleRequirementsTxt:
         my_print('Too many requirements.txt files found! Please use --requirements_file argument to set right')
@@ -117,11 +115,6 @@ def main():
                 str(output_dir), requirements_file)
 
     for f in files_under_test:
-        my_print(f'\n----------- Start testing {f} -----------\n')
         test_file_name = f'test_{"_".join(f.relative_to(project_dir).parts)}'
         generate_tests(java, str(jar_path.absolute()), sys_paths, sys.executable, str(f), skip_regression, timeout,
                        str((output_dir / test_file_name).absolute()))
-
-
-if __name__ == '__main__':
-    main()

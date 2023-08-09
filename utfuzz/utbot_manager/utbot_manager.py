@@ -1,6 +1,4 @@
-import importlib.machinery
-import inspect
-import pathlib
+import ast
 import subprocess
 import typing
 
@@ -8,16 +6,22 @@ from utfuzz.user_interface.printer import my_print
 
 
 def find_classes(file: str) -> typing.List[str]:
-    path = pathlib.Path(file)
-    module = importlib.machinery.SourceFileLoader(path.stem, file).load_module()
-    class_members = inspect.getmembers(module, inspect.isclass)
-    return [c[0] for c in class_members]
+    with open(file) as fh:
+        root = ast.parse(fh.read(), file)
+    classes = []
+    for node in ast.iter_child_nodes(root):
+        if isinstance(node, ast.ClassDef):
+            classes.append(node.name)
+    return classes
 
 
 def has_top_level_functions(file: str) -> bool:
-    path = pathlib.Path(file)
-    module = importlib.machinery.SourceFileLoader(path.stem, file).load_module()
-    return len(inspect.getmembers(module, inspect.isfunction)) > 0
+    with open(file) as fh:
+        root = ast.parse(fh.read(), file)
+    for node in ast.iter_child_nodes(root):
+        if isinstance(node, ast.FunctionDef):
+            return True
+    return False
 
 
 def run_utbot(
@@ -54,6 +58,7 @@ def generate_tests(
         timeout: int,
         output_dir: str,
 ):
+    my_print(f'\n----------- Start testing {file_under_test} -----------\n')
     if has_top_level_functions(file_under_test):
         my_print(f'Testing top-level function from {file_under_test}...')
         run_utbot(java, jar_path, sys_paths, python_path, file_under_test, None, skip_regression, timeout, output_dir)
@@ -61,5 +66,4 @@ def generate_tests(
     for c in find_classes(file_under_test):
         my_print(f'Testing class {c} form {file_under_test}...')
         run_utbot(java, jar_path, sys_paths, python_path, file_under_test, c, skip_regression, timeout, output_dir)
-
-
+    my_print(f'\n----------- Finish testing {file_under_test} -----------\n')
