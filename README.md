@@ -32,18 +32,19 @@ $ python -m pip install -e ./
 
 You can use `utfuzz` one of three modes:
 * dialog mode (default)
-* config file mode (work if you add `--skip_dialog` argument and there are config file after previous executions)
-* CLI arguments mode (work if you add `--skip_dialog` and `--skip_config_file`)
+* config file mode
+* CLI arguments mode
 
 Priority:
-* if not `--skip_dialog` we use cli-options values for default values and 
-* if 
+* if `--use_config_file` default values will be from config file
+* if not `--use_config_file` default values will be from cli-arguments
+* then if not `--skip-dialog` new values will be from dialog
 
 ```
 options:
   -h, --help            show this help message and exit
   --skip_dialog         Do not ask parameters before execution
-  --skip_config_file    Do not use config file in current directory
+  --use_config_file     Use config file in project directory
   --skip_regression_tests
                         Do not generate regression suite
   -j JAVA, --java JAVA  Path to Java
