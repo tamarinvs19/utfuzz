@@ -7,7 +7,7 @@ import jdk
 import enum
 
 
-class BaseJavaResult(enum.Enum):
+class JavaResult(enum.Enum):
     InvalidVersion = 1
     IncorrectVersion = 2
     NotFoundJava = 3
@@ -29,20 +29,31 @@ class JavaRequirementsManager(object):
                 return str((self.target_dir / [x for x in target_dir_children if x.startswith('jdk')][0] / 'bin' / 'java').absolute())
         return "java"
 
-    def check_base_java(self, java_path: typing.Optional[str] = None) -> BaseJavaResult:
-        java_path = self.find_java() if java_path is None else java_path
+    def check_java(self, java_path: str) -> JavaResult:
         try:
             java_info = subprocess.check_output([java_path, "-version"], stderr=subprocess.STDOUT).decode()
         except Exception:
-            return BaseJavaResult.NotFoundJava
+            return JavaResult.NotFoundJava
         version_regex = re.compile(r'version "(.*)"')
         full_version = version_regex.findall(java_info)
         if len(full_version) != 1:
-            return BaseJavaResult.InvalidVersion
+            return JavaResult.InvalidVersion
         version = full_version[0].split('.')[0]
         if version != self.JAVA_VERSION:
-            return BaseJavaResult.IncorrectVersion
-        return BaseJavaResult.ValidJava
+            return JavaResult.IncorrectVersion
+        return JavaResult.ValidJava
+
+    def check_base_java(self, java_path: typing.Optional[str] = None) -> typing.Tuple[JavaResult, typing.Optional[str]]:
+        if java_path is not None:
+            if self.check_java(java_path) == JavaResult.ValidJava:
+                return JavaResult.ValidJava, java_path
+
+        java_path = self.find_java()
+        check_java = self.check_java(java_path)
+        if check_java == JavaResult.ValidJava:
+            return check_java, java_path
+        else:
+            return check_java, None
 
     def install_java(self) -> str:
         return str((pathlib.Path(jdk.install(self.JAVA_VERSION, path=str(self.target_dir.absolute()))) / 'bin' / 'java').absolute())

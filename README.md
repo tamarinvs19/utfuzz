@@ -18,6 +18,8 @@ $ cd utfuzz
 $ python -m pip install -e ./
 ```
 
+To run `utfuzz` you can use module `python -m utfuzz` or command `utfuzz` with active python environment.
+
 #### Java installation
 
 `utfuzz` depends on Java 17 and newer. If you don't have an installed Java `utfuzz` will try to install it or your can install Java by yourself using these instructions:
@@ -30,10 +32,21 @@ $ python -m pip install -e ./
 
 ### Using `utfuzz`
 
+To run:
+```shell
+$ python -m utfuzz
+```
+or
+```shell
+$ utfuzz
+```
+
 You can use `utfuzz` one of three modes:
 * dialog mode (default)
 * config file mode
 * CLI arguments mode
+
+After each test generation settings will be saved to file `utfuzz_config.json`
 
 Priority:
 * if `--use_config_file` default values will be from config file

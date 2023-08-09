@@ -8,7 +8,7 @@ from utfuzz.config.config_manager import save_config, load_config
 from utfuzz.exceptions.exceptions import EnvironmentException, NotFoundRequirementsTxt, MultipleRequirementsTxt
 from utfuzz.file_manager.file_finder import find_config, get_py_files
 from utfuzz.parser import parse
-from utfuzz.requirements_managers.java_requirements_manager import JavaRequirementsManager, BaseJavaResult
+from utfuzz.requirements_managers.java_requirements_manager import JavaRequirementsManager, JavaResult
 from utfuzz.requirements_managers.python_requirements_manger import PythonRequirementsManager
 from utfuzz.utbot_manager.utbot_manager import generate_tests
 
@@ -16,6 +16,13 @@ from utfuzz.utbot_manager.utbot_manager import generate_tests
 def main():
     args = parse()
     project_dir = pathlib.Path(args.project_dir).absolute()
+    java = 'java'
+    timeout = 60
+    output_dir = project_dir / 'utbot_tests'
+    skip_regression = False
+    requirements_file = None
+    sys_paths = []
+    files_under_test = []
 
     # Firstly we use config file
     if args.use_config_file:
@@ -33,39 +40,44 @@ def main():
         output_dir = pathlib.Path(config_params['output'])
         project_dir = pathlib.Path(config_params['project'])
         requirements_file = config_params['requirements']
-    else:
-        # Secondly we use cli-arguments
+
+    # Secondly we use cli-arguments
+    if '--output_dir' in sys.argv or '-o' in sys.argv:
         output_dir = pathlib.Path(args.output_dir).absolute()
+    if '--java' in sys.argv or '-j' in sys.argv:
         java = args.java
+    if '--timeout' in sys.argv or '-t' in sys.argv:
         timeout = args.timeout
+    if '--skip_regression_tests' in sys.argv or '-' in sys.argv:
         skip_regression = args.skip_regression_tests
+
+    if '--files_under_tests' in sys.argv:
         files_under_test = args.files_under_test
+    if '--sys_paths' in sys.argv:
         sys_paths = args.sys_paths
+    if '--requirements_file' in sys.argv:
         requirements_file = args.requirements_file
 
     my_print('utfuzz started...')
+    java_manager = JavaRequirementsManager(project_dir)
+
+    java_result, java = java_manager.check_base_java(java)
+    if java_result != JavaResult.ValidJava:
+        install = input('utfuzz depends on Java 17, install it? (Y/n) ')
+        if install in {'Y', ''}:
+            my_print('Start Java installation...')
+            java = java_manager.install_java()
+            my_print(f'Installed Java 17 to {java}. You can set it by --java argument at the next time.')
+
+    if java is None:
+        my_print('Some problems with Java! Your can set a correct path to Java 17 using argument --java. See '
+                 'installation instruction in README.md')
+        return
+
+    my_print(f'Selected Java: {java}')
+
     # Thirdly we use dialog
     if not args.skip_dialog:
-        if java is None:
-            java_manager = JavaRequirementsManager(project_dir)
-
-            java_is_installed = java_manager.check_base_java(java)
-            if java_is_installed == BaseJavaResult.ValidJava:
-                java = java_manager.find_java()
-            else:
-                install = input('utfuzz depends on Java 17, install it? (Y/n) ')
-                if install in {'Y', ''}:
-                    my_print('Start Java installation...')
-                    java = java_manager.install_java()
-                    my_print(f'Installed Java 17 to {java}. You can set it by --java argument at the next time.')
-
-        if java is None:
-            my_print('Your can set a correct path to Java 17 using argument --java. See installation instruction in '
-                     'README.md')
-            return
-
-        my_print(f'Selected Java: {java}')
-
         my_print(f'Set timeout (s) per one class or top-level functions in one file (set empty to choose {timeout}s)')
         custom_timeout = input(f'Timeout (default = {timeout}s): ')
         timeout = int(custom_timeout) if custom_timeout != '' else timeout
