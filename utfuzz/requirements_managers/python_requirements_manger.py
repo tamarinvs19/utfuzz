@@ -1,14 +1,12 @@
-import os
 import pathlib
 import subprocess
 import sys
 import typing
 
 from utfuzz.exceptions.exceptions import NotFoundRequirementsTxt, MultipleRequirementsTxt
-from utfuzz.requirements_managers.abc_requirements_manager import AbstractPythonRequirementsManger
 
 
-class PythonRequirementsManager(AbstractPythonRequirementsManger):
+class PythonRequirementsManager(object):
     UTBOT_REQUIREMENTS = ('utbot_executor==1.4.32', 'utbot_mypy_runner==0.2.11')
 
     def __init__(self, project_dir: pathlib.Path):

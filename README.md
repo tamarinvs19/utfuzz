@@ -11,17 +11,16 @@ You can install it as a python module:
 $ python -m pip install utfuzz
 ```
 
-Or from source code using `poetry`:
+Or from source code:
 ```shell
 $ git clone https://github.com/tamarinvs19/utfuzz
 $ cd utfuzz
-$ python -m pip install build
+$ python -m pip install -e ./
 ```
 
 #### Java installation
 
-`utfuzz` depends on Java 17 and newer. If you don't have an installed Java `utfuzz` will try to install (now this
-function available only for Linux) or give you a link to installation instruction.
+`utfuzz` depends on Java 17 and newer. If you don't have an installed Java `utfuzz` will try to install it or your can install Java by yourself using these instructions:
 
 [Java installation instruction for Linux](https://docs.oracle.com/en/java/javase/17/install/installation-jdk-linux-platforms.html)
 
@@ -35,6 +34,10 @@ You can use `utfuzz` one of three modes:
 * dialog mode (default)
 * config file mode (work if you add `--skip_dialog` argument and there are config file after previous executions)
 * CLI arguments mode (work if you add `--skip_dialog` and `--skip_config_file`)
+
+Priority:
+* if not `--skip_dialog` we use cli-options values for default values and 
+* if 
 
 ```
 options:

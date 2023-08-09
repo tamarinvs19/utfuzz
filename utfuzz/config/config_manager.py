@@ -10,6 +10,7 @@ def save_config(
         skip_regression: bool,
         timeout: int,
         output: str,
+        requirements: str,
 ):
     with open(str(project_dir / 'utfuzz_config.json'), 'w') as conf:
         print(json.dumps({
@@ -20,6 +21,7 @@ def save_config(
             'timeout': timeout,
             'output': output,
             'project': str(project_dir),
+            'requirements': requirements,
         }), file=conf)
 
 
