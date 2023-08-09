@@ -10,7 +10,7 @@ def parse() -> argparse.Namespace:
         epilog="See also main website of UnitTestBot project: utbot.org",
     )
     parser.add_argument('--skip_dialog', action='store_true', help='Do not ask parameters before execution')
-    parser.add_argument('--skip_config_file', action='store_false', help='Do not use config file in current directory')
+    parser.add_argument('--use_config_file', action='store_true', help='Use config file in current directory')
     parser.add_argument('--skip_regression_tests', action='store_true', help='Do not generate regression suite')
     parser.add_argument('-j', '--java', help='Path to Java')
     parser.add_argument('-t', '--timeout', type=int, default=60, help='Timeout for test generation process per one '
