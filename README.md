@@ -6,12 +6,7 @@
 
 `utfuzz` supports Python versions 3.8-3.11
 
-You can install it as a python module:
-```shell
-$ python -m pip install utfuzz
-```
-
-Or from source code:
+You can install it from source code:
 ```shell
 $ git clone https://github.com/tamarinvs19/utfuzz
 $ cd utfuzz
