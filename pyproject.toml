@@ -7,9 +7,6 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-utbot_executor = "1.4.32"
-utbot_mypy_runner = "0.2.11"
-requests = "^2.31.0"
 install-jdk = "^1.1.0"
 
 [tool.poetry.scripts]

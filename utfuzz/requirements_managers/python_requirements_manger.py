@@ -7,7 +7,7 @@ from utfuzz.exceptions.exceptions import NotFoundRequirementsTxt, MultipleRequir
 
 
 class PythonRequirementsManager(object):
-    UTBOT_REQUIREMENTS = ('utbot_executor==1.4.32', 'utbot_mypy_runner==0.2.11')
+    UTBOT_REQUIREMENTS = ('utbot_executor==1.4.36', 'utbot_mypy_runner==0.2.11')
 
     def __init__(self, project_dir: pathlib.Path):
         self.project_dir = project_dir
