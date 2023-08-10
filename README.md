@@ -8,10 +8,17 @@
 
 You can install it from source code:
 ```shell
+$ python -m pip install git+https://github.com/tamarinvs19/utfuzz
+```
+
+or
+
+```shell
 $ git clone https://github.com/tamarinvs19/utfuzz
 $ cd utfuzz
 $ python -m pip install -e ./
 ```
+
 
 To run `utfuzz` you can use module `python -m utfuzz` or command `utfuzz` with active python environment.
 
