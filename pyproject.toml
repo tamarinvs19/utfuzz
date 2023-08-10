@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "utfuzz"
-version = "0.1.8"
+version = "0.1.9"
 description = ""
 authors = ["Vyacheslav Tamarin <slavabarsuk@ya.ru>"]
 readme = "README.md"

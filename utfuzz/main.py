@@ -51,7 +51,7 @@ def main():
     if '--skip_regression_tests' in sys.argv or '-' in sys.argv:
         skip_regression = args.skip_regression_tests
 
-    if '--files_under_tests' in sys.argv:
+    if '--files_under_test' in sys.argv:
         files_under_test = args.files_under_test
     if '--sys_paths' in sys.argv:
         sys_paths = args.sys_paths
@@ -82,8 +82,18 @@ def main():
         custom_timeout = input(f'Timeout (default = {timeout}s): ')
         timeout = int(custom_timeout) if custom_timeout != '' else timeout
 
-        custom_project_dir = input(f'Set project directory to generate tests (default = {project_dir}): ')
+        custom_project_dir = input(f'Set your project root directory (default = {project_dir}): ')
         project_dir = pathlib.Path(custom_project_dir) if custom_project_dir != '' else project_dir
+
+        my_print(f'Specify files and directories to generate tests, print one file/directory to one line, empty line '
+                 f'marks the end (default = all):')
+        files_under_test = []
+        while file_under_test := input(' * '):
+            file_path = pathlib.Path(file_under_test)
+            if file_path.is_file():
+                files_under_test.append(file_path)
+            elif file_path.is_dir():
+                files_under_test += get_py_files(file_path)
 
         custom_output_dir = input(f'Set directory for tests (default = {output_dir}): ')
         output_dir = pathlib.Path(custom_output_dir) if custom_output_dir != '' else output_dir
