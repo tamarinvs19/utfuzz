@@ -42,7 +42,7 @@ def run_utbot(
     if class_under_test is not None:
         command += f' -c {class_under_test}'
     try:
-        output = subprocess.check_output(command.split())
+        output = subprocess.check_output(command.split(), stderr=subprocess.STDOUT)
         my_print(output.decode())
     except Exception:
         pass
@@ -58,12 +58,15 @@ def generate_tests(
         timeout: int,
         output_dir: str,
 ):
-    my_print(f'\n----------- Start testing {file_under_test} -----------\n')
-    if has_top_level_functions(file_under_test):
-        my_print(f'Testing top-level function from {file_under_test}...')
-        run_utbot(java, jar_path, sys_paths, python_path, file_under_test, None, skip_regression, timeout, output_dir)
+    has_top_level = has_top_level_functions(file_under_test)
+    all_classes = find_classes(file_under_test)
+    if has_top_level or len(all_classes) > 0:
+        my_print(f'\n   -------- Start fuzz {file_under_test} --------   ')
+        if has_top_level:
+            my_print(f' Fuzz top-level functions from {file_under_test}...')
+            run_utbot(java, jar_path, sys_paths, python_path, file_under_test, None, skip_regression, timeout, output_dir)
 
-    for c in find_classes(file_under_test):
-        my_print(f'Testing class {c} form {file_under_test}...')
-        run_utbot(java, jar_path, sys_paths, python_path, file_under_test, c, skip_regression, timeout, output_dir)
-    my_print(f'\n----------- Finish testing {file_under_test} -----------\n')
+        for c in all_classes:
+            my_print(f' Fuzz class {c} form {file_under_test}...')
+            run_utbot(java, jar_path, sys_paths, python_path, file_under_test, c, skip_regression, timeout, output_dir)
+        my_print(f'   -------- Finish fuzz {file_under_test} --------   \n')

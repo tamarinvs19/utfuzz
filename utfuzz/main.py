@@ -2,7 +2,9 @@
 import pathlib
 import sys
 
-from utfuzz.user_interface.printer import my_print
+import tqdm as tqdm
+
+from utfuzz.user_interface.printer import my_print, char_to_bool
 
 from utfuzz.config.config_manager import save_config, load_config
 from utfuzz.exceptions.exceptions import EnvironmentException, NotFoundRequirementsTxt, MultipleRequirementsTxt
@@ -16,13 +18,13 @@ from utfuzz.utbot_manager.utbot_manager import generate_tests
 def main():
     args = parse()
     project_dir = pathlib.Path(args.project_dir).absolute()
+    output_dir = None
     java = 'java'
     timeout = 60
-    output_dir = project_dir / 'utbot_tests'
     skip_regression = False
     requirements_file = None
     sys_paths = []
-    files_under_test = []
+    analyze_targets = []
 
     # Firstly we use config file
     if args.use_config_file:
@@ -35,7 +37,7 @@ def main():
         java = config_params['java']
         timeout = config_params['timeout']
         skip_regression = config_params['skip_regression']
-        files_under_test = config_params['files_under_test']
+        analyze_targets = config_params['analyze_targets']
         sys_paths = config_params['sys_paths']
         output_dir = pathlib.Path(config_params['output'])
         project_dir = pathlib.Path(config_params['project'])
@@ -51,8 +53,8 @@ def main():
     if '--skip_regression_tests' in sys.argv or '-' in sys.argv:
         skip_regression = args.skip_regression_tests
 
-    if '--files_under_test' in sys.argv:
-        files_under_test = args.files_under_test
+    if '--analyze_targets' in sys.argv:
+        analyze_targets = args.files_under_test
     if '--sys_paths' in sys.argv:
         sys_paths = args.sys_paths
     if '--requirements_file' in sys.argv:
@@ -78,33 +80,35 @@ def main():
 
     # Thirdly we use dialog
     if not args.skip_dialog:
-        my_print(f'Set timeout (s) per one class or top-level functions in one file (set empty to choose {timeout}s)')
-        custom_timeout = input(f'Timeout (default = {timeout}s): ')
+        my_print(f'Set timeout in seconds per one class or top-level functions in one file (set empty to choose {timeout}s)')
+        custom_timeout = input(f'Timeout in seconds (default = {timeout}s): ')
         timeout = int(custom_timeout) if custom_timeout != '' else timeout
 
         custom_project_dir = input(f'Set your project root directory (default = {project_dir}): ')
         project_dir = pathlib.Path(custom_project_dir) if custom_project_dir != '' else project_dir
 
-        my_print(f'Specify files and directories to generate tests, print one file/directory to one line, empty line '
+        my_print(f'Specify files and directories to analyze, print one file/directory in row, empty input '
                  f'marks the end (default = all):')
-        files_under_test = []
+        analyze_targets = []
         while file_under_test := input(' * '):
             file_path = pathlib.Path(file_under_test)
             if file_path.is_file():
-                files_under_test.append(file_path)
+                analyze_targets.append(file_path)
             elif file_path.is_dir():
-                files_under_test += get_py_files(file_path)
+                analyze_targets += get_py_files(file_path)
 
+        if output_dir is None:
+            output_dir = project_dir / 'utbot_tests'
         custom_output_dir = input(f'Set directory for tests (default = {output_dir}): ')
-        output_dir = pathlib.Path(custom_output_dir) if custom_output_dir != '' else output_dir
+        output_dir = pathlib.Path(custom_output_dir).absolute() if custom_output_dir != '' else output_dir
 
         custom_skip_regression = input(f'Do you want to generate regression suite? '
-                                       f'Write True/False or 1/0 (default = {not skip_regression}): ')
-        skip_regression = bool(custom_skip_regression) if custom_skip_regression != '' else skip_regression
+                                       f'({"y/N" if skip_regression else "Y/n"})  ')
+        skip_regression = char_to_bool(custom_skip_regression, not skip_regression)
 
     python_manager = PythonRequirementsManager(project_dir)
     if not python_manager.check_python():
-        my_print('Please use Python 3.9 and newer')
+        my_print('Please use Python 3.8 or newer')
         return
     my_print('Installing python dependencies...')
     python_manager.python_requirements_install()
@@ -116,27 +120,37 @@ def main():
                 pathlib.Path(requirements_file)
             )
     except NotFoundRequirementsTxt:
-        my_print('Cannot find requirements.txt file.'
-                 ' If your project has python dependencies please write it to requirements.txt')
+        my_print('Cannot find requirements.txt file. '
+                 'If your project has python dependencies please write it to requirements.txt')
     except MultipleRequirementsTxt:
         my_print('Too many requirements.txt files found! Please use --requirements_file argument to set right')
         return
 
-    if len(files_under_test) == 0:
-        files_under_test = get_py_files(project_dir)
+    if len(analyze_targets) == 0:
+        analyze_targets = get_py_files(project_dir)
     else:
-        files_under_test = [pathlib.Path(f).absolute() for f in files_under_test]
-    my_print(f'Found {len(files_under_test)} python files to test')
+        analyze_targets = [pathlib.Path(f).absolute() for f in analyze_targets]
 
     jar_path = pathlib.Path(__file__).parent / 'utbot-cli-python.jar'
     sys_paths.append(str(project_dir))
-    sys_paths = list(set(sys_paths))
+
+    sys_paths = list({str(pathlib.Path(p).resolve().absolute()) for p in sys_paths})
+    project_dir = project_dir.resolve().absolute()
+    output_dir = output_dir.resolve().absolute()
 
     # Save config before test generation process
-    save_config(project_dir, java, sys_paths, [str(f) for f in files_under_test], skip_regression, timeout,
+    save_config(project_dir, java, sys_paths, [str(f) for f in analyze_targets], skip_regression, timeout,
                 str(output_dir), requirements_file)
 
-    for f in files_under_test:
+    my_print(f'Found {len(analyze_targets)} python files to analyze')
+    for f in tqdm.tqdm(analyze_targets, desc='Progress'):
         test_file_name = f'test_{"_".join(f.relative_to(project_dir).parts)}'
-        generate_tests(java, str(jar_path.absolute()), sys_paths, sys.executable, str(f), skip_regression, timeout,
-                       str((output_dir / test_file_name).absolute()))
+        generate_tests(java,
+                       str(jar_path.resolve().absolute()),
+                       sys_paths,
+                       sys.executable,
+                       str(f.resolve().absolute()),
+                       skip_regression,
+                       timeout,
+                       str((output_dir / test_file_name).resolve().absolute())
+                       )

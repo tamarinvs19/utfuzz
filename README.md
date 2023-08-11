@@ -19,7 +19,6 @@ $ cd utfuzz
 $ python -m pip install -e ./
 ```
 
-
 To run `utfuzz` you can use module `python -m utfuzz` or command `utfuzz` with active python environment.
 
 #### Java installation
@@ -84,5 +83,11 @@ options:
 See also main website of UnitTestBot project: utbot.org
 ```
 
-See also main [website](utbot.org) of UnitTestBot project and [GitHub repository](github.com/UnitTestBot/UTBotJava).
+### UnitTestBot sources
+You can change UnitTestBot source java file by changing `jar`-file `utfuzz/utbot-cli-python.jar` (Note: don't change the file name).
+
+After replacing `jar`-file you should reinstall this module.
+
+
+See also main [website](https://utbot.org) of UnitTestBot project and [GitHub repository](github.com/UnitTestBot/UTBotJava).
 

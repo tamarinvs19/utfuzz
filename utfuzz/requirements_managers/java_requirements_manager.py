@@ -56,4 +56,5 @@ class JavaRequirementsManager(object):
             return check_java, None
 
     def install_java(self) -> str:
-        return str((pathlib.Path(jdk.install(self.JAVA_VERSION, path=str(self.target_dir.absolute()))) / 'bin' / 'java').absolute())
+        return str((pathlib.Path(jdk.install(self.JAVA_VERSION, path=str(self.target_dir.absolute()))) / 'bin' / 'java')
+                   .resolve().absolute())
