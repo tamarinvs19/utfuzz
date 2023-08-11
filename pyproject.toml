@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "utfuzz"
-version = "0.1.9"
+version = "0.1.10"
 description = ""
 authors = ["Vyacheslav Tamarin <slavabarsuk@ya.ru>"]
 readme = "README.md"
@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 install-jdk = "^1.1.0"
+tqdm = "^4.66.1"
 
 [tool.poetry.scripts]
 utfuzz = "utfuzz.main:main"
