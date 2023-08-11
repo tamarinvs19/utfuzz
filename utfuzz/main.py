@@ -25,6 +25,7 @@ def main():
     requirements_file = None
     sys_paths = []
     analyze_targets = []
+    debug_mode = False
 
     # Firstly we use config file
     if args.use_config_file:
@@ -59,6 +60,8 @@ def main():
         sys_paths = args.sys_paths
     if '--requirements_file' in sys.argv:
         requirements_file = args.requirements_file
+    if '--debug' in sys.argv:
+        debug_mode = args.debug
 
     my_print('utfuzz started...')
     java_manager = JavaRequirementsManager(project_dir)
@@ -104,7 +107,7 @@ def main():
 
         custom_skip_regression = input(f'Do you want to generate regression suite? '
                                        f'({"y/N" if skip_regression else "Y/n"})  ')
-        skip_regression = char_to_bool(custom_skip_regression, not skip_regression)
+        skip_regression = char_to_bool(custom_skip_regression, skip_regression)
 
     python_manager = PythonRequirementsManager(project_dir)
     if not python_manager.check_python():
@@ -152,5 +155,6 @@ def main():
                        str(f.resolve().absolute()),
                        skip_regression,
                        timeout,
-                       str((output_dir / test_file_name).resolve().absolute())
+                       str((output_dir / test_file_name).resolve().absolute()),
+                       debug_mode,
                        )

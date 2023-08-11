@@ -34,13 +34,18 @@ def run_utbot(
         skip_regression: bool,
         timeout: int,
         output_dir: str,
+        debug_mode: bool,
 ):
-    command = f"{java} -jar {jar_path} generate_python {file_under_test}" \
+    jar_command = f"{java} -jar {jar_path}"
+    command = f" generate_python {file_under_test}" \
               f" -p {python_path} -o {output_dir} -s {','.join(sys_paths)} --timeout {timeout * 1000}"
     if skip_regression:
         command += ' --do-not-generate-regression-suite'
     if class_under_test is not None:
         command += f' -c {class_under_test}'
+    if debug_mode:
+        jar_command += ' --verbosity DEBUG'
+    command = jar_command + command
     try:
         output = subprocess.check_output(command.split(), stderr=subprocess.STDOUT)
         my_print(output.decode())
@@ -57,16 +62,17 @@ def generate_tests(
         skip_regression: bool,
         timeout: int,
         output_dir: str,
+        debug_mode: bool,
 ):
     has_top_level = has_top_level_functions(file_under_test)
     all_classes = find_classes(file_under_test)
     if has_top_level or len(all_classes) > 0:
-        my_print(f'\n   -------- Start fuzz {file_under_test} --------   ')
+        my_print(f'\n   -------- Start fuzzing {file_under_test} --------   ')
         if has_top_level:
             my_print(f' Fuzz top-level functions from {file_under_test}...')
-            run_utbot(java, jar_path, sys_paths, python_path, file_under_test, None, skip_regression, timeout, output_dir)
+            run_utbot(java, jar_path, sys_paths, python_path, file_under_test, None, skip_regression, timeout, output_dir, debug_mode)
 
         for c in all_classes:
             my_print(f' Fuzz class {c} form {file_under_test}...')
-            run_utbot(java, jar_path, sys_paths, python_path, file_under_test, c, skip_regression, timeout, output_dir)
-        my_print(f'   -------- Finish fuzz {file_under_test} --------   \n')
+            run_utbot(java, jar_path, sys_paths, python_path, file_under_test, c, skip_regression, timeout, output_dir, debug_mode)
+        my_print(f'   -------- Finish fuzzing {file_under_test} --------   \n')
