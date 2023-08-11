@@ -13,5 +13,5 @@ def signal_handler(signal, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
 
-FORMAT = '%(asctime)s | %(levelno)s | %(filename)s | %(lineno)d | %(message)s'
-logging.basicConfig(format=FORMAT, filemode='a', filename=pathlib.Path('.utfuzz.log'))
+FORMAT = '%(asctime)s | %(filename)s | line:%(lineno)d | %(message)s'
+logging.basicConfig(format=FORMAT, filemode='a', filename=pathlib.Path('.utfuzz.log'), level=logging.INFO)

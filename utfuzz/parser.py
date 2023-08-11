@@ -11,8 +11,8 @@ def parse() -> argparse.Namespace:
     )
     parser.add_argument('--skip_dialog', action='store_true', help='Do not ask parameters before execution')
     parser.add_argument('--use_config_file', action='store_true', help='Use config file in current directory')
-    parser.add_argument('--skip_regression_tests', action='store_true', help='Do not generate regression suite')
-    parser.add_argument('-j', '--java', help='Path to Java', default='java')
+    parser.add_argument('--generate_only_error_suite', action='store_true', help='Generate only error suite')
+    parser.add_argument('-j', '--java', help='Path to Java executable file or JAVA_HOME', default='java')
     parser.add_argument('-t', '--timeout', type=int, default=60, help='Timeout in seconds for test generation process '
                                                                       'per one class or group of top-level functions '
                                                                       'from one file')

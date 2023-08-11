@@ -31,6 +31,9 @@ class JavaRequirementsManager(object):
 
     def check_java(self, java_path: str) -> JavaResult:
         try:
+            path = pathlib.Path(java_path)
+            if path.is_dir():
+                java_path = str(path / 'bin' / 'java')
             java_info = subprocess.check_output([java_path, "-version"], stderr=subprocess.STDOUT).decode()
         except Exception:
             return JavaResult.NotFoundJava
@@ -45,6 +48,9 @@ class JavaRequirementsManager(object):
 
     def check_base_java(self, java_path: typing.Optional[str] = None) -> typing.Tuple[JavaResult, typing.Optional[str]]:
         if java_path is not None:
+            path = pathlib.Path(java_path)
+            if path.is_dir():
+                java_path = str(path / 'bin' / 'java')
             if self.check_java(java_path) == JavaResult.ValidJava:
                 return JavaResult.ValidJava, java_path
 

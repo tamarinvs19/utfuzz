@@ -55,30 +55,30 @@ Priority:
 * then if not `--skip-dialog` new values will be from dialog
 
 ```
-                        usage: utfuzz [options]
+usage: utfuzz [options]
 
-utfuzz is a Python fuzzing engine. It supports fuzzing of Python code and
-generation reproducing code for error and regression suites
+utfuzz is a Python fuzzing engine. It supports fuzzing of Python code and generation reproducing code for error and regression suites
 
 options:
   -h, --help            show this help message and exit
   --skip_dialog         Do not ask parameters before execution
   --use_config_file     Use config file in current directory
-  --skip_regression_tests
-                        Do not generate regression suite
-  -j JAVA, --java JAVA  Path to Java
+  --generate_only_error_suite
+                        Generate only error suite
+  -j JAVA, --java JAVA  Path to Java executable file or JAVA_HOME
   -t TIMEOUT, --timeout TIMEOUT
-                        Timeout for test generation process per one class or group of top-level functions from one file
+                        Timeout in seconds for test generation process per one class or group of top-level functions from one file
   -p PROJECT_DIR, --project_dir PROJECT_DIR
                         Root directory with your code for testing (will be used for imports and dependencies resolving)
   -o OUTPUT_DIR, --output_dir OUTPUT_DIR
                         Directory for generated tests collecting
   --sys_paths [SYS_PATHS ...]
                         Additional path to find imports(will be added to `sys.path`, default = project directory) [optional]
-  --files_under_test [FILES_UNDER_TEST ...]
+  --analyze_targets [ANALYZE_TARGETS ...]
                         List of files or directories for testing, empty means <<test all>> [optional]
   --requirements_file REQUIREMENTS_FILE
                         Path to requirements.txt [optional]
+  --debug               Use debug mode
 
 See also main website of UnitTestBot project: utbot.org
 ```

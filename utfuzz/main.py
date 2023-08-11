@@ -21,7 +21,7 @@ def main():
     output_dir = None
     java = 'java'
     timeout = 60
-    skip_regression = False
+    generate_only_error_suite = False
     requirements_file = None
     sys_paths = []
     analyze_targets = []
@@ -37,7 +37,7 @@ def main():
         config_params = load_config(config)
         java = config_params['java']
         timeout = config_params['timeout']
-        skip_regression = config_params['skip_regression']
+        generate_only_error_suite = config_params['generate_only_error_suite']
         analyze_targets = config_params['analyze_targets']
         sys_paths = config_params['sys_paths']
         output_dir = pathlib.Path(config_params['output'])
@@ -52,10 +52,10 @@ def main():
     if '--timeout' in sys.argv or '-t' in sys.argv:
         timeout = args.timeout
     if '--skip_regression_tests' in sys.argv or '-' in sys.argv:
-        skip_regression = args.skip_regression_tests
+        generate_only_error_suite = args.generate_only_error_suite
 
     if '--analyze_targets' in sys.argv:
-        analyze_targets = args.files_under_test
+        analyze_targets = args.analyze_targets
     if '--sys_paths' in sys.argv:
         sys_paths = args.sys_paths
     if '--requirements_file' in sys.argv:
@@ -105,9 +105,9 @@ def main():
         custom_output_dir = input(f'Set directory for tests (default = {output_dir}): ')
         output_dir = pathlib.Path(custom_output_dir).absolute() if custom_output_dir != '' else output_dir
 
-        custom_skip_regression = input(f'Do you want to generate regression suite? '
-                                       f'({"y/N" if skip_regression else "Y/n"})  ')
-        skip_regression = char_to_bool(custom_skip_regression, skip_regression)
+        custom_only_error_suite = input(f'Do you want to generate only error suite? '
+                                        f'({"Y/n" if generate_only_error_suite else "y/N"})  ')
+        generate_only_error_suite = char_to_bool(custom_only_error_suite, generate_only_error_suite)
 
     python_manager = PythonRequirementsManager(project_dir)
     if not python_manager.check_python():
@@ -142,7 +142,7 @@ def main():
     output_dir = output_dir.resolve().absolute()
 
     # Save config before test generation process
-    save_config(project_dir, java, sys_paths, [str(f) for f in analyze_targets], skip_regression, timeout,
+    save_config(project_dir, java, sys_paths, [str(f) for f in analyze_targets], generate_only_error_suite, timeout,
                 str(output_dir), requirements_file)
 
     my_print(f'Found {len(analyze_targets)} python files to analyze')
@@ -153,7 +153,7 @@ def main():
                        sys_paths,
                        sys.executable,
                        str(f.resolve().absolute()),
-                       skip_regression,
+                       generate_only_error_suite,
                        timeout,
                        str((output_dir / test_file_name).resolve().absolute()),
                        debug_mode,
