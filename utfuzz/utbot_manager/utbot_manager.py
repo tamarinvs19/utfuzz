@@ -49,7 +49,8 @@ def run_utbot(
     try:
         output = subprocess.check_output(command.split(), stderr=subprocess.STDOUT)
         my_print(output.decode())
-    except Exception:
+    except Exception as e:
+        my_print(str(e))
         pass
 
 
@@ -69,10 +70,7 @@ def generate_tests(
     if has_top_level or len(all_classes) > 0:
         my_print(f'\n   -------- Start fuzzing {file_under_test} --------   ')
         if has_top_level:
-            my_print(f' Fuzz top-level functions from {file_under_test}...')
             run_utbot(java, jar_path, sys_paths, python_path, file_under_test, None, skip_regression, timeout, output_dir, debug_mode)
 
         for c in all_classes:
-            my_print(f' Fuzz class {c} form {file_under_test}...')
             run_utbot(java, jar_path, sys_paths, python_path, file_under_test, c, skip_regression, timeout, output_dir, debug_mode)
-        my_print(f'   -------- Finish fuzzing {file_under_test} --------   \n')

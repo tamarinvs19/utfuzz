@@ -4,7 +4,8 @@ import sys
 
 import tqdm as tqdm
 
-from utfuzz.user_interface.printer import my_print, char_to_bool
+from utfuzz.user_interface.printer import my_print
+from utfuzz.user_interface.utils import char_to_bool
 
 from utfuzz.config.config_manager import save_config, load_config
 from utfuzz.exceptions.exceptions import EnvironmentException, NotFoundRequirementsTxt, MultipleRequirementsTxt
@@ -12,6 +13,8 @@ from utfuzz.file_manager.file_finder import find_config, get_py_files
 from utfuzz.parser import parse
 from utfuzz.requirements_managers.java_requirements_manager import JavaRequirementsManager, JavaResult
 from utfuzz.requirements_managers.python_requirements_manger import PythonRequirementsManager
+from utfuzz.user_interface.reader import my_read, read_with_action, check_int, Ok, check_int_with_default, \
+    check_exists_path_with_default, check_valid_path_with_default, check_yes_no_with_default
 from utfuzz.utbot_manager.utbot_manager import generate_tests
 
 
@@ -68,11 +71,15 @@ def main():
 
     java_result, java = java_manager.check_base_java(java)
     if java_result != JavaResult.ValidJava:
-        install = input('utfuzz depends on Java 17, install it? (Y/n) ')
-        if install in {'Y', ''}:
-            my_print('Start Java installation...')
-            java = java_manager.install_java()
-            my_print(f'Installed Java 17 to {java}. You can set it by --java argument at the next time.')
+        if not args.skip_dialog:
+            install = read_with_action(
+                'utfuzz depends on Java 17, install it? (Y/n) ',
+                check_yes_no_with_default(True)
+            )
+            if char_to_bool(install):
+                my_print('Start Java installation...')
+                java = java_manager.install_java()
+                my_print(f'Installed Java 17 to {java}. You can set it by --java argument at the next time.')
 
     if java is None:
         my_print('Some problems with Java! Your can set a correct path to Java 17 using argument --java. See '
@@ -84,17 +91,23 @@ def main():
     # Thirdly we use dialog
     if not args.skip_dialog:
         my_print(f'Set timeout in seconds per one class or top-level functions in one file (set empty to choose {timeout}s)')
-        custom_timeout = input(f'Timeout in seconds (default = {timeout}s): ')
-        timeout = int(custom_timeout) if custom_timeout != '' else timeout
+        timeout = read_with_action(
+            f'Timeout in seconds (default = {timeout}s): ',
+            check_int_with_default(timeout),
+        )
 
-        custom_project_dir = input(f'Set your project root directory (default = {project_dir}): ')
-        project_dir = pathlib.Path(custom_project_dir) if custom_project_dir != '' else project_dir
+        project_dir = read_with_action(
+            f'Set your project root directory (default = {project_dir}): ',
+            check_exists_path_with_default(project_dir)
+        )
 
         my_print(f'Specify files and directories to analyze, print one file/directory in row, empty input '
                  f'marks the end (default = all):')
         analyze_targets = []
-        while file_under_test := input(' * '):
-            file_path = pathlib.Path(file_under_test)
+        while target := my_read(' * '):
+            file_path = pathlib.Path(target)
+            if not file_path.exists():
+                my_print("   ^-- this file doesn't exists")
             if file_path.is_file():
                 analyze_targets.append(file_path)
             elif file_path.is_dir():
@@ -102,12 +115,15 @@ def main():
 
         if output_dir is None:
             output_dir = project_dir / 'utbot_tests'
-        custom_output_dir = input(f'Set directory for tests (default = {output_dir}): ')
-        output_dir = pathlib.Path(custom_output_dir).absolute() if custom_output_dir != '' else output_dir
+        output_dir = read_with_action(
+            f'Set directory for tests (default = {output_dir}): ',
+            check_valid_path_with_default(output_dir)
+        )
 
-        custom_only_error_suite = input(f'Do you want to generate only error suite? '
-                                        f'({"Y/n" if generate_only_error_suite else "y/N"})  ')
-        generate_only_error_suite = char_to_bool(custom_only_error_suite, generate_only_error_suite)
+        generate_only_error_suite = read_with_action(
+            f'Do you want to generate only error suite? ({"Y/n" if generate_only_error_suite else "y/N"})  ',
+            check_yes_no_with_default(generate_only_error_suite)
+        )
 
     python_manager = PythonRequirementsManager(project_dir)
     if not python_manager.check_python():
