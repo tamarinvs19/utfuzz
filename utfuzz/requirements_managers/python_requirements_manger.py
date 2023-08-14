@@ -33,7 +33,7 @@ class PythonRequirementsManager(object):
             out = subprocess.check_output(
                 [sys.executable, "-m", "pip", "install", "-r", custom_requirements],
                 stderr=subprocess.STDOUT)
-        logging.info(out)
+            logging.info(out)
 
     def check_python(self) -> bool:
         version = sys.version_info

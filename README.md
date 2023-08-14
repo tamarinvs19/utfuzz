@@ -1,23 +1,29 @@
 # utfuzz
 
-`utfuzz` is a Python fuzzing engine. It supports fuzzing of Python code and generation reproducing code for error and regression suites. 
+`utfuzz` is a Python fuzzing engine. It supports fuzzing of Python code and generation reproducing code for error and regression suites.
 
 ### Installation
 
 `utfuzz` supports Python versions 3.8-3.11
 
-You can install it from source code:
-```shell
-$ python -m pip install git+https://github.com/tamarinvs19/utfuzz
-```
+You can use one of these ways:
+1. Install from package archive:
+    - download [utfuzz.tar.gz](https://github.com/tamarinvs19/utfuzz/raw/master/utfuzz_build/utfuzz.tar.gz?download=)
+    - run
+      `
+      python -m pip install utfuzz.tar.gz
+      `
 
-or
-
-```shell
-$ git clone https://github.com/tamarinvs19/utfuzz
-$ cd utfuzz
-$ python -m pip install -e ./
-```
+2. Install from GitHub (if you have [`lfs`](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)):
+    ```shell
+    python -m pip install git+https://github.com/tamarinvs19/utfuzz
+    ```
+3. Install from source code (if you have [`lfs`](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage))
+    ```shell
+    git clone https://github.com/tamarinvs19/utfuzz
+    cd utfuzz
+    python -m pip install -e ./
+    ```
 
 To run `utfuzz` you can use module `python -m utfuzz` or command `utfuzz` with active python environment.
 
@@ -35,11 +41,11 @@ To run `utfuzz` you can use module `python -m utfuzz` or command `utfuzz` with a
 
 To run:
 ```shell
-$ python -m utfuzz
+python -m utfuzz
 ```
 or
 ```shell
-$ utfuzz
+utfuzz
 ```
 
 You can use `utfuzz` one of three modes:
