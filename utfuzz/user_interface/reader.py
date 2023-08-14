@@ -84,9 +84,9 @@ def check_valid_path_with_default(default: pathlib.Path) -> typing.Callable[[str
     return check_with_default(check_valid_path, default)
 
 
-def check_yes_no(value: str, default: bool) -> Status[bool]:
+def check_yes_no(value: str) -> Status[bool]:
     try:
-        return Ok(char_to_bool(value, default))
+        return Ok(char_to_bool(value))
     except KeyError:
         return Fail('Invalid answer')
 

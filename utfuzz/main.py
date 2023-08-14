@@ -76,10 +76,12 @@ def main():
                 'utfuzz depends on Java 17, install it? (Y/n) ',
                 check_yes_no_with_default(True)
             )
-            if char_to_bool(install):
+            if install:
                 my_print('Start Java installation...')
                 java = java_manager.install_java()
                 my_print(f'Installed Java 17 to {java}. You can set it by --java argument at the next time.')
+            else:
+                return
 
     if java is None:
         my_print('Some problems with Java! Your can set a correct path to Java 17 using argument --java. See '
