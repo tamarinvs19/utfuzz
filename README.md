@@ -8,7 +8,7 @@
 
 You can use one of these ways:
 1. Install from package archive:
-    - download [utfuzz.tar.gz](https://drive.google.com/file/d/1YiVNEzsfdmjZomc_cAgGicbmlRcNe9AI/view?usp=sharing)
+    - download [utfuzz.tar.gz](https://disk.yandex.ru/d/lmnsT9DdaxZyAg)
     <!-- https://github.com/tamarinvs19/utfuzz/raw/master/utfuzz_build/utfuzz.tar.gz?download=) -->
     - run
       `
