@@ -8,22 +8,23 @@
 
 You can use one of these ways:
 1. Install from package archive:
-    - download [utfuzz.tar.gz](https://github.com/tamarinvs19/utfuzz/raw/master/utfuzz_build/utfuzz.tar.gz?download=)
+    - download [utfuzz.tar.gz](https://drive.google.com/file/d/1YiVNEzsfdmjZomc_cAgGicbmlRcNe9AI/view?usp=sharing)
+    <!-- https://github.com/tamarinvs19/utfuzz/raw/master/utfuzz_build/utfuzz.tar.gz?download=) -->
     - run
       `
       python -m pip install utfuzz.tar.gz
       `
 
-2. Install from GitHub (if you have [`lfs`](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)):
-    ```shell
-    python -m pip install git+https://github.com/tamarinvs19/utfuzz
-    ```
-3. Install from source code (if you have [`lfs`](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage))
-    ```shell
-    git clone https://github.com/tamarinvs19/utfuzz
-    cd utfuzz
-    python -m pip install -e ./
-    ```
+<!-- 2. Install from GitHub (if you have [`lfs`](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)): -->
+<!--     ```shell -->
+<!--     python -m pip install git+https://github.com/tamarinvs19/utfuzz -->
+<!--     ``` -->
+<!-- 3. Install from source code (if you have [`lfs`](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-git-large-file-storage)) -->
+<!--     ```shell -->
+<!--     git clone https://github.com/tamarinvs19/utfuzz -->
+<!--     cd utfuzz -->
+<!--     python -m pip install -e ./ -->
+<!--     ``` -->
 
 To run `utfuzz` you can use module `python -m utfuzz` or command `utfuzz` with active python environment.
 
