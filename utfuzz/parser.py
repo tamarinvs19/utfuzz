@@ -46,7 +46,7 @@ def parse() -> argparse.Namespace:
     parser.add_argument(
         "-o",
         "--output-dir",
-        default="utbot_tests",
+        default="utfuzz_tests",
         help="Directory for generated tests collecting",
     )
 
@@ -55,8 +55,7 @@ def parse() -> argparse.Namespace:
         nargs="*",
         default=[],
         help="Additional path to find imports"
-        "(will be added to `sys.path`, default = project "
-        "directory) [optional]",
+        "(will be added to `sys.path`, default = project directory) [optional]",
     )
     parser.add_argument(
         "--analyze-targets",

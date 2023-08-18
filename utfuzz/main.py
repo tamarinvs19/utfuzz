@@ -52,14 +52,18 @@ def main():
             my_print("Cannot find config file")
             return
         config_params = load_config(config)
-        java = config_params["java"]
-        timeout = config_params["timeout"]
-        generate_only_error_suite = config_params["generate_only_error_suite"]
-        analyze_targets = config_params["analyze_targets"]
-        sys_paths = config_params["sys_paths"]
-        output_dir = pathlib.Path(config_params["output"])
-        project_dir = pathlib.Path(config_params["project"])
-        requirements_file = config_params["requirements"]
+        java = config_params.get("java", java)
+        timeout = config_params.get("timeout", timeout)
+        generate_only_error_suite = config_params.get(
+            "generate_only_error_suite", generate_only_error_suite
+        )
+        analyze_targets = config_params.get("analyze_targets", analyze_targets)
+        sys_paths = config_params.get("sys_paths", sys_paths)
+        output_dir = (lambda x: pathlib.Path(x) if x is not None else output_dir)(
+            config_params.get("output", None)
+        )
+        project_dir = pathlib.Path(config_params.get("project", project_dir))
+        requirements_file = config_params.get("requirements", requirements_file)
 
     # Secondly we use cli-arguments
     if "--output-dir" in sys.argv or "-o" in sys.argv:
@@ -125,9 +129,9 @@ def main():
 
         my_print(
             f"Specify files and directories to analyze, print one file/directory in row, empty input "
-            f"marks the end (without clarification all files will be analyzed):"
+            f"marks the end (without clarification all files "
+            f"{'from project directory ' if analyze_targets else 'from configuration '} will be analyzed):"
         )
-        analyze_targets = []
         while target := my_read(" * "):
             file_path = pathlib.Path(target)
             if not file_path.is_absolute():
