@@ -61,7 +61,10 @@ Priority:
 * then if not `--skip-dialog` new values will be from dialog
 
 ```
-usage: utfuzz [options]
+usage: utfuzz [-h] [--skip-dialog] [--use-config-file] [--generate-only-error-suite]
+              [-j JAVA] [-t TIMEOUT] [-p PROJECT_DIR] [-o OUTPUT_DIR]
+              [--sys-paths [SYS_PATHS ...]] [--analyze-targets [ANALYZE_TARGETS ...]]
+              [--requirements-file REQUIREMENTS_FILE] [--debug]
 
 utfuzz is a Python fuzzing engine. It supports fuzzing of Python code and
 generation reproducing code for error and regression suites

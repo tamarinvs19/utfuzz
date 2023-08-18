@@ -4,7 +4,6 @@ import argparse
 def parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="utfuzz",
-        usage="utfuzz [options]",
         description="utfuzz is a Python fuzzing engine. It supports fuzzing of Python code and generation reproducing "
         "code for error and regression suites",
         epilog="See also main website of UnitTestBot project: utbot.org",
