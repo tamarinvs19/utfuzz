@@ -59,13 +59,11 @@ def parse() -> argparse.Namespace:
     parser.add_argument(
         "--analyze-targets",
         nargs="*",
-        type=argparse.FileType("r"),
         default=[],
         help="List of files or directories for testing, empty means <<test all>> [optional]",
     )
     parser.add_argument(
         "--requirements-file",
-        type=argparse.FileType("r"),
         help="Path to requirements.txt [optional]",
     )
     parser.add_argument("--debug", action="store_true", help="Use debug mode")
