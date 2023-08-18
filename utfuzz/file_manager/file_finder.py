@@ -6,9 +6,20 @@ from utfuzz.exceptions.exceptions import EnvironmentException
 
 def get_py_files(directory: pathlib.Path) -> typing.List[pathlib.Path]:
     return [
-        d.absolute()
+        d.resolve().absolute()
         for d in directory.glob(r"**/*.py")
-        if d.relative_to(directory).parts[0] not in {'venv', '.venv', 'env', '.env', 'tests', '.utfuzz', 'utbot_tests'}
+        if d.relative_to(directory).parts[0]
+        not in {
+            "venv",
+            ".venv",
+            "env",
+            ".env",
+            "tests",
+            ".utfuzz",
+            "utfuzz_tests",
+        }
+        and not d.name.startswith("test_")
+        and not d.name.endswith("_test.py")
     ]
 
 
