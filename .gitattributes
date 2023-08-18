@@ -1,2 +1,0 @@
-*.jar filter=lfs diff=lfs merge=lfs -text
-utfuzz_build/utfuzz.tar.gz filter=lfs diff=lfs merge=lfs -text
