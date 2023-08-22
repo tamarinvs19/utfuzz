@@ -63,7 +63,7 @@ def check_exists_path(value: typing.Any) -> Status[pathlib.Path]:
         path = pathlib.Path(value)
         if path.exists():
             return Ok(path)
-    return Fail(f'{value} does not exists')
+    return Fail(f'{value} does not exist')
 
 
 def check_exists_path_with_default(default: pathlib.Path) -> typing.Callable[[str], Status[pathlib.Path]]:
@@ -75,9 +75,9 @@ def check_valid_path(value: typing.Any) -> Status[pathlib.Path]:
         try:
             path = pathlib.Path(value)
         except Exception:
-            return Fail(f'Invalid path {value}')
+            return Fail(f'Invalid path: {value}')
         return Ok(path)
-    return Fail(f'Invalid path {value}')
+    return Fail(f'Invalid path: {value}')
 
 
 def check_valid_path_with_default(default: pathlib.Path) -> typing.Callable[[str], Status[pathlib.Path]]:
