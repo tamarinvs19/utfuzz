@@ -4,67 +4,73 @@ import argparse
 def parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         prog="utfuzz",
-        description="utfuzz is a Python fuzzing engine. It supports fuzzing of Python code and generation reproducing "
-        "code for error and regression suites",
-        epilog="See also main website of UnitTestBot project: utbot.org",
+        description="utfuzz is a Python fuzzing engine, generating ready-to-use unit tests "
+        "for both error and regression suites.",
+        # epilog="See also main website of UnitTestBot project: utbot.org",
+        # epilog="See utbot.org/python for more information.",
     )
     parser.add_argument(
         "--skip-dialog",
         action="store_true",
-        help="Do not ask parameters before execution",
+        help="do not ask for options interactively",
     )
     parser.add_argument(
         "--use-config-file",
         action="store_true",
-        help="Use config file in current directory",
+        help="use config file from current directory",
     )
     parser.add_argument(
         "--generate-only-error-suite",
         action="store_true",
-        help="Generate only error suite",
+        help="generate only error suite",
     )
     parser.add_argument(
-        "-j", "--java", help="Path to Java executable file or JAVA_HOME", default="java"
+        "-j", "--java",
+        help="path to Java executable file or JAVA_HOME",
+        default="java"
     )
     parser.add_argument(
         "-t",
         "--timeout",
         type=int,
         default=60,
-        help="Timeout in seconds for test generation process "
-        "per one class or group of top-level functions "
+        help="timeout in seconds for generating tests "
+        "per class or group of top-level functions "
         "from one file",
     )
     parser.add_argument(
         "-p",
         "--project-dir",
         default=".",
-        help="Root directory with your code for testing (will be "
-        "used for imports and dependencies resolving)",
+        help="root directory with code under test "
+        "(used for imports and dependency resolving)",
     )
     parser.add_argument(
         "-o",
         "--output-dir",
         default="utfuzz_tests",
-        help="Directory for generated tests collecting",
+        help="directory for generated tests",
     )
 
     parser.add_argument(
         "--sys-paths",
         nargs="*",
         default=[],
-        help="Additional path to find imports"
-        "(will be added to `sys.path`, default = project directory) [optional]",
+        help="additional path to find imports "
+        "(will be added to `sys.path`; default = project directory)",
     )
     parser.add_argument(
         "--analyze-targets",
         nargs="*",
         default=[],
-        help="List of files or directories for testing, empty means <<test all>> [optional]",
+        help="list of files or directories to test; empty value field means <<test all>>",
     )
     parser.add_argument(
         "--requirements-file",
-        help="Path to requirements.txt [optional]",
+        help="path to requirements.txt",
     )
-    parser.add_argument("--debug", action="store_true", help="Use debug mode")
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="use debug mode")
     return parser.parse_args()

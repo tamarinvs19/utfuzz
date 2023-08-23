@@ -49,7 +49,7 @@ def main():
         try:
             config = find_config(project_dir)
         except EnvironmentException:
-            my_print("Cannot find config file")
+            my_print("Cannot find config file.")
             return
         config_params = load_config(config)
         java = config_params.get("java", java)
@@ -91,34 +91,34 @@ def main():
     if java_result != JavaResult.ValidJava:
         if not args.skip_dialog:
             install = read_with_action(
-                "utfuzz depends on Java 17, install it? (Y/n) ",
+                "utfuzz depends on Java 17. Would you like to install? (Y/n) ",
                 check_yes_no_with_default(True),
             )
             if install:
                 my_print("Start Java installation...")
                 java = java_manager.install_java()
                 my_print(
-                    f"Installed Java 17 to {java}. You can set it by --java argument at the next time."
+                    f"Installed Java 17 to {java}. To set the path to it, use --java argument next time."
                 )
             else:
                 return
 
     if java is None:
         my_print(
-            "Some problems with Java! Your can set a correct path to Java 17 using argument --java. See "
-            "installation instruction in README.md"
+            "Some problems with Java! To set a correct path to Java 17, use --java argument. "
+            "See installation instructions in README.md."
         )
         return
 
-    my_print(f"Selected Java: {java}")
+    my_print(f"Current Java: {java}")
 
     # Thirdly we use dialog
     if not args.skip_dialog:
         my_print(
-            f"Set timeout in seconds per one class or top-level functions in one file (set empty to choose {timeout}s)"
+            f"Set timeout in seconds: per one class or top-level functions in one file. Leave empty to choose {timeout} s."
         )
         timeout = read_with_action(
-            f"Timeout in seconds (default = {timeout}s): ",
+            f"Timeout in seconds (default = {timeout} s): ",
             check_int_with_default(timeout),
         )
 
@@ -128,16 +128,16 @@ def main():
         )
 
         my_print(
-            f"Specify files and directories to analyze, print one file/directory in row, empty input "
-            f"marks the end (without clarification all files "
-            f"{'from project directory ' if analyze_targets else 'from configuration '} will be analyzed):"
+            f"Specify files and directories to analyze: print one file/directory in a row; empty input "
+            f"marks the end (by default, all files "
+            f"{'from the project directory ' if analyze_targets else 'from configuration '} will be analyzed):"
         )
         while target := my_read(" * "):
             file_path = pathlib.Path(target)
             if not file_path.is_absolute():
                 file_path = project_dir / file_path
             if not file_path.exists():
-                my_print("   ^-- this file doesn't exists")
+                my_print("   ^-- this file does not exist")
             if file_path.is_file():
                 analyze_targets.append(file_path)
             elif file_path.is_dir():
@@ -151,7 +151,7 @@ def main():
         )
 
         generate_only_error_suite = read_with_action(
-            f'Do you want to generate only error suite? ({"Y/n" if generate_only_error_suite else "y/N"})  ',
+            f'Do you want to generate only an error suite? ({"Y/n" if generate_only_error_suite else "y/N"})  ',
             check_yes_no_with_default(generate_only_error_suite),
         )
 
@@ -160,9 +160,9 @@ def main():
 
     python_manager = PythonRequirementsManager(project_dir)
     if not python_manager.check_python():
-        my_print("Please use Python 3.8 or newer")
+        my_print("Please use Python 3.8 or newer.")
         return
-    my_print("Installing python dependencies...")
+    my_print("Installing Python dependencies...")
     python_manager.python_requirements_install()
     try:
         if requirements_file is None:
@@ -172,11 +172,11 @@ def main():
     except NotFoundRequirementsTxt:
         my_print(
             "Cannot find requirements.txt file. "
-            "If your project has python dependencies please write it to requirements.txt"
+            "If your project has Python dependencies, please specify them in requirements.txt."
         )
     except MultipleRequirementsTxt:
         my_print(
-            "Too many requirements.txt files found! Please use --requirements_file argument to set right"
+            "Too many requirements.txt files found! Please use --requirements-file argument to set the right one."
         )
         return
 
@@ -205,7 +205,7 @@ def main():
         requirements_file,
     )
 
-    my_print(f"Found {len(analyze_targets)} python files to analyze")
+    my_print(f"Found {len(analyze_targets)} Python files to analyze.")
     for f in tqdm.tqdm(analyze_targets, desc="Progress"):
         test_file_name = f'test_{"_".join(f.relative_to(project_dir).parts)}'
         generate_tests(
