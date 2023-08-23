@@ -107,9 +107,9 @@ options:
   --debug               use debug mode
 ```
 
-### UnitTestBot sources
+## UnitTestBot sources
 
-`utfuzz` has the UnitTestBot fuzzing engine inside. To change the version of the UnitTestBot source, 
+`utfuzz` has the [UnitTestBot fuzzing engine](https://github.com/UnitTestBot/UTBotJava/tree/main/utbot-cli-python) inside. To change the version of the UnitTestBot source, 
 replace it with the necessary `utfuzz/utbot-cli-python.jar` file (do not change the file name).
 Upon replacing, remember to reinstall this module.
 
