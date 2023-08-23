@@ -7,7 +7,7 @@ from utfuzz.user_interface.printer import my_print
 
 
 def signal_handler(signal, frame):
-    my_print('\nUtFuzzer has been cancelled!')
+    my_print('\nutfuzz has been cancelled!')
     sys.exit(0)
 
 

@@ -84,14 +84,14 @@ def main():
     if "--debug" in sys.argv:
         debug_mode = args.debug
 
-    my_print("UtFuzzer started...")
+    my_print("utfuzz started...")
     java_manager = JavaRequirementsManager(project_dir)
 
     java_result, java = java_manager.check_base_java(java)
     if java_result != JavaResult.ValidJava:
         if not args.skip_dialog:
             install = read_with_action(
-                "UtFuzzer depends on Java 17. Would you like to install? (Y/n) ",
+                "utfuzz depends on Java 17. Would you like to install? (Y/n) ",
                 check_yes_no_with_default(True),
             )
             if install:
